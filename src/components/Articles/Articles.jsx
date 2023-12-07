@@ -1,31 +1,196 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import "./articles.css";
+import article from "../../../API/API_articles";
 
-function Articles() {
+// eslint-disable-next-line react/prop-types
+function Articles({ setItemSelect, totalPrice }) {
+  const [dataItem, setDataItem] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [itemValue, setItemValue] = useState("");
+
+  //ADD TO STATE DATA OF DATABASE
+  const fetchData = async () => {
+    try {
+      const data = await article();
+      const itemsWithQuantity = data.map((item) => ({ ...item, quantity: 0 }));
+      setDataItem(filteredItems.length > 0 ? filteredItems : itemsWithQuantity);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //SUBSTRACT COUNT
+  const handleCountAdd = (index) => {
+    setDataItem((prevData) => {
+      const newData = [...prevData];
+      newData[index] = {
+        ...newData[index],
+        quantity: newData[index].quantity + 1,
+      };
+
+      return newData;
+    });
+  };
+
+  //ADD COUNT
+  const handleCountSubstract = (index) => {
+    setDataItem((prevData) => {
+      const newData = [...prevData];
+      newData[index] = {
+        ...newData[index],
+        quantity: newData[index].quantity - 1,
+      };
+      return newData;
+    });
+  };
+
+  //FUNCTION ADD TO CART
+
+  const addToCart = (index) => {
+    setItemSelect((prevData) => {
+      const selectedProduct = {
+        id: dataItem[index].id_item,
+        quantity: dataItem[index].quantity,
+        price: dataItem[index].price,
+        name: dataItem[index].product_title,
+      };
+
+      // Buscar el producto en el carrito por su ID
+      const existingProductIndex = prevData.findIndex(
+        (product) => product.id === selectedProduct.id
+      );
+
+      // Si el producto ya está en el carrito, actualizar la cantidad y precio
+      if (existingProductIndex !== -1) {
+        const updatedCart = [...prevData];
+        updatedCart[existingProductIndex].quantity += selectedProduct.quantity;
+        updatedCart[existingProductIndex].price += selectedProduct.price;
+        return updatedCart;
+      } else {
+        // Si el producto no está en el carrito, agregarlo
+        return [...prevData, selectedProduct];
+      }
+    });
+
+    totalPrice();
+  };
+
+  //SEARCHINPUT
+
+  const searchItems = () => {
+    if (itemValue !== "") {
+      const filtered = dataItem.filter((item) =>
+        item.product_title.toLowerCase().includes(itemValue.toLowerCase())
+      );
+      setFilteredItems(filtered);
+    } else {
+      setFilteredItems(dataItem);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    searchItems();
+  }, [dataItem, itemValue]);
+
   return (
     <>
-      <div className="card">
-        <div className="card-img">
-          <div className="img"></div>
+      <div className="containerArticles">
+        <div>
+          <input
+            value={itemValue}
+            onChange={(e) => setItemValue(e.target.value)}
+            type="search"
+            name=""
+            id=""
+          />
         </div>
-        <div className="card-title">Product title</div>
-        <div className="card-subtitle">
-          Product description. Lorem ipsum dolor sit amet, consectetur
-          adipisicing elit.
-        </div>
-        <hr className="card-divider" />
-        <div className="card-footer">
-          <div className="card-price">
-            <span>$</span> 123.45
-          </div>
-          <button className="card-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path d="m397.78 316h-205.13a15 15 0 0 1 -14.65-11.67l-34.54-150.48a15 15 0 0 1 14.62-18.36h274.27a15 15 0 0 1 14.65 18.36l-34.6 150.48a15 15 0 0 1 -14.62 11.67zm-193.19-30h181.25l27.67-120.48h-236.6z"></path>
-              <path d="m222 450a57.48 57.48 0 1 1 57.48-57.48 57.54 57.54 0 0 1 -57.48 57.48zm0-84.95a27.48 27.48 0 1 0 27.48 27.47 27.5 27.5 0 0 0 -27.48-27.47z"></path>
-              <path d="m368.42 450a57.48 57.48 0 1 1 57.48-57.48 57.54 57.54 0 0 1 -57.48 57.48zm0-84.95a27.48 27.48 0 1 0 27.48 27.47 27.5 27.5 0 0 0 -27.48-27.47z"></path>
-              <path d="m158.08 165.49a15 15 0 0 1 -14.23-10.26l-25.71-77.23h-47.44a15 15 0 1 1 0-30h58.3a15 15 0 0 1 14.23 10.26l29.13 87.49a15 15 0 0 1 -14.23 19.74z"></path>
-            </svg>
-          </button>
+        <div className="cardContainer">
+          {(filteredItems.length > 0 ? filteredItems : dataItem).map(
+            (data, index) => (
+              <div key={data.id_item} className="card">
+                <div className="card-img">
+                  <div className="img"></div>
+                </div>
+                <div className="card-title">{data.product_title}</div>
+                <div className="card-subtitle">{data.product_description}</div>
+                <hr className="card-divider" />
+                <div className="card-footer">
+                  <div className="card-price">
+                    <span>$</span> {data.price}
+                  </div>
+                  {data.quantity === 0 ? (
+                    <button
+                      onClick={() => addToCart(index)}
+                      disabled
+                      className="card-btn"
+                    >
+                      Add to cart
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 512 512"
+                      ></svg>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => addToCart(index)}
+                      className="card-btn"
+                    >
+                      Add to cart
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 512 512"
+                      ></svg>
+                    </button>
+                  )}
+                </div>
+
+                <div className="stockContainer">
+                  <div className="btn-container">
+                    {data.quantity === 0 ? (
+                      <button
+                        disabled
+                        onClick={() => handleCountSubstract(index)}
+                        className="btn-stock"
+                      >
+                        -
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleCountSubstract(index)}
+                        className="btn-stock"
+                      >
+                        -
+                      </button>
+                    )}
+                    <p>{data.quantity}</p>
+                    {data.quantity === data.stock ? (
+                      <button
+                        disabled
+                        onClick={() => handleCountAdd(index)}
+                        className="btn-stock"
+                      >
+                        +
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleCountAdd(index)}
+                        className="btn-stock"
+                      >
+                        +
+                      </button>
+                    )}
+                  </div>
+                  <div>
+                    <p>Stock: {data.stock}</p>
+                  </div>
+                </div>
+              </div>
+            )
+          )}
         </div>
       </div>
     </>

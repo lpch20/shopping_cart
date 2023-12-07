@@ -1,36 +1,58 @@
-.logo{
-    width: 80px;
-    border-radius: 80px;
+.logo {
+  width: 80px;
+  border-radius: 80px;
 }
 
-.navBarBackground{
-    background-color: black;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.navBarBackground {
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.containerLogoAndTitle{
-    color: white;
+.containerLogoAndTitle {
+  color: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 80px;
+}
+
+.containerLogoAndTitle h1 {
+  padding-left: 15px;
+}
+
+.kartShopImg {
+  width: 40px;
+}
+
+.modal {
+  background-color: burlywood;
+  height: auto;
+  width: auto;
+  position: absolute;
+  right: 0px;
+  display: block;
+  z-index: 2;
+}
+
+.modal thead th {
+  padding: 20px;
+}
+.modal tbody td {
+  padding: 20px;
+  margin-left: 20px;
+}
+
+tfoot{
     display: flex;
     flex-direction: row;
-    align-items: center;
+    justify-content: space-around;
 }
 
-.containerLogoAndTitle h1{
-    padding-left: 15px;
+.containerKartShop{
+  display: flex;
+  flex-direction: row;
+  color: white;
+  gap: 5px;
 }
-
-.kartShopImg{
-    width: 40px;
-}
-
-.modal{
-    background-color: burlywood;
-    height: 300px;
-    width: 300px;
-    position: absolute;
-    right: 0px;
-    display: block;
-}
-
