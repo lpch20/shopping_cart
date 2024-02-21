@@ -1,0 +1,97 @@
+.containerLogin {
+  position: relative;
+  height: 100vh;
+}
+
+.containerButtons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.containerButtons button {
+    width: 250px;
+}
+
+.containerLogin::before {
+  content: "";
+  background-image: url("https://media.giphy.com/media/3o6fJ5bCble8IRbKQU/giphy.gif");
+  background-size: cover;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  filter: blur(15px);
+  z-index: -1;
+}
+
+.titleWelcome {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white; /* Asegúrate de que el texto sea visible en el fondo */
+  z-index: 1;
+}
+
+.titleWelcome h1 {
+  text-align: center;
+  font-size: 60px;
+  gap: 10px;
+}
+
+@media (min-width: 720px) {
+  .titleWelcome h1 {
+    text-align: center;
+    font-size: 80px;
+  }
+}
+
+@media (min-width: 920px) {
+  .titleWelcome h1 {
+    text-align: center;
+    font-size: 100px;
+  }
+}
+
+.btnLoginAndRegister {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #3d405b;
+  border: none;
+  color: #ffffff;
+  text-align: center;
+  font-size: 17px;
+  padding: 16px;
+  width: 130px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.btnLoginAndRegister span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.btnLoginAndRegister span:after {
+  content: "»";
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -15px;
+  transition: 0.5s;
+}
+
+.btnLoginAndRegister:hover span {
+  padding-right: 15px;
+}
+
+.btnLoginAndRegister:hover span:after {
+  opacity: 1;
+  right: 0;
+}
